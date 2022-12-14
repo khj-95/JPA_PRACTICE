@@ -1,15 +1,20 @@
 package com.example.jpa.quiz.service;
 
 import com.example.jpa.quiz.contant.*;
+import com.example.jpa.quiz.domain.*;
 import com.example.jpa.quiz.dto.*;
 import com.example.jpa.quiz.exception.*;
+import com.example.jpa.quiz.repository.QuizRepository;
 import com.example.jpa.quiz.service.strategy.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class QuizServiceTests {
@@ -18,6 +23,10 @@ public class QuizServiceTests {
     QuizDescriptiveService descriptiveService;
     @Mock
     QuizObjectiveService objectiveService;
+    @Mock
+    QuizRepository quizRepository;
+    @Mock
+    Quiz quiz;
 
     @InjectMocks
     QuizService service;
@@ -88,4 +97,54 @@ public class QuizServiceTests {
 
         fail("걸러내지 못함");
     }
+
+    @Test
+    void retrieve_quiz_by_id() {
+        Quiz quiz = new Quiz();
+        quiz.setId(1l);
+        quiz.setQuestion("test Question");
+        quiz.setContent("test Content");
+        quiz.setCategory(Category.JAVA.name());
+
+        when(quizRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(quiz));
+        service.retrieve(1l);
+    }
+
+    @Test
+    void retrieve_descriptive_quiz_by_id() {
+        Quiz quiz = new Quiz();
+        DescriptiveAnswer descriptiveAnswer = new DescriptiveAnswer();
+        descriptiveAnswer.setQuiz(quiz);
+
+        quiz.setDescriptiveAnswer(descriptiveAnswer);
+
+        when(quizRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(quiz));
+        service.retrieve(1l);
+    }
+
+    @Test
+    void retrieve_objective_quiz_by_id() {
+        Quiz quiz = new Quiz();
+        ObjectiveAnswer objectiveAnswer = new ObjectiveAnswer();
+        objectiveAnswer.setQuiz(quiz);
+
+        quiz.setObjectiveAnswer(objectiveAnswer);
+
+        when(quizRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(quiz));
+        service.retrieve(1l);
+    }
+
+    @Test
+    void retrieve_quiz_by_id_is_null() {
+        try {
+            when(quizRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.empty());
+            service.retrieve(1l);
+        } catch (InvalidQuizInstanceException exception) {
+            return;
+        }
+
+        fail("걸러내지 못함");
+    }
+
+
 }

@@ -1,6 +1,7 @@
 package com.example.jpa.quiz.service.strategy;
 
 import com.example.jpa.quiz.contant.*;
+import com.example.jpa.quiz.domain.*;
 import com.example.jpa.quiz.dto.*;
 import com.example.jpa.quiz.exception.*;
 import com.example.jpa.quiz.repository.*;
@@ -67,5 +68,23 @@ public class QuizObjectiveServiceTests {
         }
 
         fail("걸러내지 못함");
+    }
+
+    @Test
+    void test_to_quiz_dto() {
+        Quiz quiz = new Quiz();
+        quiz.setId(1l);
+        quiz.setQuestion("test Question");
+        quiz.setContent("test Content");
+        quiz.setCategory(Category.JAVA.name());
+
+        ObjectiveAnswer objectiveAnswer = new ObjectiveAnswer();
+        objectiveAnswer.setId(1l);
+        objectiveAnswer.setAnswer(1);
+        objectiveAnswer.setQuiz(quiz);
+
+        quiz.setObjectiveAnswer(objectiveAnswer);
+
+        service.toQuizDTO(quiz);
     }
 }
