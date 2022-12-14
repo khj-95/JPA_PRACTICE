@@ -1,4 +1,4 @@
-package com.example.jpa.quiz.contant;
+package com.example.jpa.quiz.constant;
 
 public enum Category {
     JAVA, SQL
