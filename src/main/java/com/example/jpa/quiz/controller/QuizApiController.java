@@ -1,20 +1,20 @@
 package com.example.jpa.quiz.controller;
 
-import com.example.jpa.quiz.dto.*;
+import com.example.jpa.quiz.dto.QuizDTO;
 import com.example.jpa.quiz.service.QuizService;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("quiz")
 @RestController
-public class QuizController {
+public class QuizApiController {
     private final QuizService service;
 
-    public QuizController(QuizService service) {
+    public QuizApiController(QuizService service) {
         this.service = service;
     }
 
-    @GetMapping("/add/d")
-    public void add(QuizDescriptiveDTO dto) {
+    @PostMapping
+    public void add(QuizDTO dto) {
         /*dto.setQuestion("test Question");
         dto.setContent("test content");
         dto.setCategory(Category.JAVA);
@@ -24,19 +24,7 @@ public class QuizController {
         service.add(dto);
     }
 
-    @GetMapping("/add/o")
-    public void add(QuizObjectiveDTO dto) {
-        /*dto.setQuestion("test Question");
-        dto.setContent("test content");
-        dto.setCategory(Category.SQL);
-        dto.setQType(QType.OBJECTIVE);
-        dto.setAnswer(1);*/
-
-        service.add(dto);
-    }
-
-    @GetMapping("/retrieve/{id}")
-    @ResponseBody
+    @GetMapping("{id}")
     public QuizDTO retrieve(@PathVariable("id") Long id) {
         return service.retrieve(id);
     }
