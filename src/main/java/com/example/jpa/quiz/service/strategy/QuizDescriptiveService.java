@@ -51,7 +51,7 @@ public class QuizDescriptiveService implements QuizTypeStrategy {
         DescriptiveAnswer descriptiveAnswer = new DescriptiveAnswer();
         descriptiveAnswer.setAnswer(data.getAnswer());
         descriptiveAnswer.setQuiz(quiz);
-        descriptiveAnswerRepository.save(descriptiveAnswer);
+        quiz.setDescriptiveAnswer(descriptiveAnswerRepository.save(descriptiveAnswer));
     }
 
     private Quiz tryAddQuiz(QuizDescriptiveDTO data) {

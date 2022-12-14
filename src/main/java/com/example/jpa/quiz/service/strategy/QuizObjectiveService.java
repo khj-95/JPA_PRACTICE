@@ -50,7 +50,7 @@ public class QuizObjectiveService implements QuizTypeStrategy {
         ObjectiveAnswer objectiveAnswer = new ObjectiveAnswer();
         objectiveAnswer.setAnswer(data.getAnswer());
         objectiveAnswer.setQuiz(quiz);
-        objectiveAnswerRepository.save(objectiveAnswer);
+        quiz.setObjectiveAnswer(objectiveAnswerRepository.save(objectiveAnswer));
     }
 
     private Quiz tryAddQuiz(QuizObjectiveDTO data) {

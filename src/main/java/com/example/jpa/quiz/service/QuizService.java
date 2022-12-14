@@ -1,7 +1,7 @@
 package com.example.jpa.quiz.service;
 
 import com.example.jpa.quiz.dto.QuizDTO;
-import com.example.jpa.quiz.exception.InvalidQuizTypeException;
+import com.example.jpa.quiz.exception.*;
 import com.example.jpa.quiz.service.strategy.*;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +29,10 @@ public class QuizService {
         switch (dto.getQType()) {
             case DESCRIPTIVE:
                 descriptiveService.add(dto);
+                break;
             case OBJECTIVE:
                 objectiveService.add(dto);
+                break;
             default:
                 return;
         }
