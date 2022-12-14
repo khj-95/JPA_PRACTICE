@@ -10,13 +10,11 @@ public class Quiz {
     private String question;
     private String content;
     @OneToOne
-    private QuizQtype quizQType;
+    @JoinColumn(name = "OBJECTIVE_ANSWER_ID")
+    private ObjectiveAnswer objectiveAnswer;
     @OneToOne
-    @JoinColumn(name = "QUIZ_CATEGORY_ID")
-    private QuizCategory quizCategory;
-    @OneToOne
-    @JoinColumn(name = "OBJECTIVE_RIGHT_ANSWER_ID")
-    private ObjectiveRightAnswer objectiveRightAnswer;
+    @JoinColumn(name = "DESCRIPTIVE_ANSWER_ID")
+    private DescriptiveAnswer descriptiveAnswer;
 
     public Long getId() {
         return id;
@@ -42,27 +40,19 @@ public class Quiz {
         this.content = content;
     }
 
-    public QuizQtype getQuizQType() {
-        return quizQType;
+    public ObjectiveAnswer getObjectiveRightAnswer() {
+        return objectiveAnswer;
     }
 
-    public void setQuizQType(QuizQtype quizQType) {
-        this.quizQType = quizQType;
+    public void setObjectiveRightAnswer(ObjectiveAnswer objectiveAnswer) {
+        this.objectiveAnswer = objectiveAnswer;
     }
 
-    public QuizCategory getQuizCategory() {
-        return quizCategory;
+    public DescriptiveAnswer getDescriptiveAnswer() {
+        return descriptiveAnswer;
     }
 
-    public void setQuizCategory(QuizCategory quizCategory) {
-        this.quizCategory = quizCategory;
-    }
-
-    public ObjectiveRightAnswer getObjectiveRightAnswer() {
-        return objectiveRightAnswer;
-    }
-
-    public void setObjectiveRightAnswer(ObjectiveRightAnswer objectiveRightAnswer) {
-        this.objectiveRightAnswer = objectiveRightAnswer;
+    public void setDescriptiveAnswer(DescriptiveAnswer descriptiveAnswer) {
+        this.descriptiveAnswer = descriptiveAnswer;
     }
 }

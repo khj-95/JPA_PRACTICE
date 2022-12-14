@@ -3,16 +3,14 @@ package com.example.jpa.quiz.domain;
 import javax.persistence.*;
 
 @Entity
-public class RightAnswer {
+public class DescriptiveAnswer {
     @Id
-    @Column(name = "RIGHT_ANSWER_ID")
+    @Column(name = "DESCRIPTIVE_ANSWER_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String answer;
     @OneToOne
     private Quiz quiz;
-    @OneToOne
-    private QtypeRightAnswer qtypeRightAnswer;
 
     public Long getId() {
         return id;
@@ -36,13 +34,5 @@ public class RightAnswer {
 
     public void setQuiz(Quiz quiz) {
         this.quiz = quiz;
-    }
-
-    public QtypeRightAnswer getQtypeRightAnswer() {
-        return qtypeRightAnswer;
-    }
-
-    public void setQtypeRightAnswer(QtypeRightAnswer qtypeRightAnswer) {
-        this.qtypeRightAnswer = qtypeRightAnswer;
     }
 }
