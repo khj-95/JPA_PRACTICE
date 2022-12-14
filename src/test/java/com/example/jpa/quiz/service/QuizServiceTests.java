@@ -1,8 +1,8 @@
 package com.example.jpa.quiz.service;
 
 import com.example.jpa.quiz.contant.*;
-import com.example.jpa.quiz.dto.QuizDescriptiveDTO;
-import com.example.jpa.quiz.exception.InvalidQuizTypeException;
+import com.example.jpa.quiz.dto.*;
+import com.example.jpa.quiz.exception.*;
 import com.example.jpa.quiz.service.strategy.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +34,17 @@ public class QuizServiceTests {
     }
 
     @Test
+    void add_objective_quiz() {
+        QuizObjectiveDTO dto = new QuizObjectiveDTO();
+        dto.setQType(QType.DESCRIPTIVE);
+        dto.setQuestion("Test question");
+        dto.setCategory(Category.JAVA);
+        dto.setAnswer(1);
+
+        service.add(dto);
+    }
+
+    @Test
     void when_dto_is_null() {
         try {
             service.add(null);
@@ -55,6 +66,23 @@ public class QuizServiceTests {
         try {
             service.add(dto);
         } catch (InvalidQuizTypeException exception) {
+            return;
+        }
+
+        fail("걸러내지 못함");
+    }
+
+    @Test
+    void when_category_is_null() {
+        QuizDescriptiveDTO dto = new QuizDescriptiveDTO();
+        dto.setQType(QType.OBJECTIVE);
+        dto.setQuestion("Test question");
+        dto.setCategory(null);
+        dto.setAnswer("answer");
+
+        try {
+            service.add(dto);
+        } catch (InvalidCategoryException exception) {
             return;
         }
 
