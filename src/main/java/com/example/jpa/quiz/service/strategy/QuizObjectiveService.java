@@ -1,5 +1,6 @@
 package com.example.jpa.quiz.service.strategy;
 
+import com.example.jpa.quiz.contant.*;
 import com.example.jpa.quiz.domain.*;
 import com.example.jpa.quiz.dto.*;
 import com.example.jpa.quiz.exception.*;
@@ -59,5 +60,16 @@ public class QuizObjectiveService implements QuizTypeStrategy {
         quiz.setContent(data.getContent());
         quiz.setCategory(data.getCategory().name());
         return repository.save(quiz);
+    }
+
+    public QuizObjectiveDTO toQuizDTO(Quiz quiz) {
+        QuizObjectiveDTO dto = new QuizObjectiveDTO();
+        dto.setQuestion(quiz.getQuestion());
+        dto.setContent(quiz.getContent());
+        dto.setQType(QType.OBJECTIVE);
+        dto.setCategory(Category.valueOf(quiz.getCategory()));
+        dto.setAnswer(quiz.getObjectiveAnswer().getAnswer());
+
+        return dto;
     }
 }
