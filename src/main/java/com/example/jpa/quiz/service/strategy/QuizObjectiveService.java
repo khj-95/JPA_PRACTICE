@@ -57,6 +57,7 @@ public class QuizObjectiveService implements QuizTypeStrategy {
         Quiz quiz = new Quiz();
         quiz.setQuestion(data.getQuestion());
         quiz.setContent(data.getContent());
+        quiz.setCategory(data.getCategory().name());
         return repository.save(quiz);
     }
 }

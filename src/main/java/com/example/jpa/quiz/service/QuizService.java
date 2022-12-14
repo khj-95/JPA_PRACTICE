@@ -25,6 +25,9 @@ public class QuizService {
         if (Objects.isNull(dto.getQType())) {
             throw new InvalidQuizTypeException();
         }
+        if (Objects.isNull(dto.getCategory())) {
+            throw new InvalidCategoryException();
+        }
 
         switch (dto.getQType()) {
             case DESCRIPTIVE:

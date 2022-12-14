@@ -9,6 +9,7 @@ public class Quiz {
     private Long id;
     private String question;
     private String content;
+    private String category;
     @OneToOne
     @JoinColumn(name = "OBJECTIVE_ANSWER_ID")
     private ObjectiveAnswer objectiveAnswer;
@@ -40,11 +41,19 @@ public class Quiz {
         this.content = content;
     }
 
-    public ObjectiveAnswer getObjectiveRightAnswer() {
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public ObjectiveAnswer getObjectiveAnswer() {
         return objectiveAnswer;
     }
 
-    public void setObjectiveRightAnswer(ObjectiveAnswer objectiveAnswer) {
+    public void setObjectiveAnswer(ObjectiveAnswer objectiveAnswer) {
         this.objectiveAnswer = objectiveAnswer;
     }
 
