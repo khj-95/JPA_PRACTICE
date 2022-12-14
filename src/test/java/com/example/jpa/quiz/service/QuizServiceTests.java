@@ -1,6 +1,6 @@
 package com.example.jpa.quiz.service;
 
-import com.example.jpa.quiz.contant.*;
+import com.example.jpa.quiz.constant.*;
 import com.example.jpa.quiz.domain.*;
 import com.example.jpa.quiz.dto.*;
 import com.example.jpa.quiz.exception.*;

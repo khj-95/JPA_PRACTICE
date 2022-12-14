@@ -1,6 +1,6 @@
 package com.example.jpa.quiz.dto;
 
-import com.example.jpa.quiz.contant.*;
+import com.example.jpa.quiz.constant.*;
 
 public abstract class QuizDTO {
     protected String question;
