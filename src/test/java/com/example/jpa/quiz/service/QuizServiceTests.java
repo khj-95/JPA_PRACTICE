@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,13 +56,7 @@ public class QuizServiceTests {
 
     @Test
     void when_dto_is_null() {
-        try {
-            service.add(null);
-        } catch (NullPointerException exception) {
-            return;
-        }
-
-        fail("걸러내지 못함");
+        assertThatThrownBy(() -> service.add(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
@@ -73,13 +67,7 @@ public class QuizServiceTests {
         dto.setCategory(Category.JAVA);
         dto.setAnswer("answer");
 
-        try {
-            service.add(dto);
-        } catch (InvalidQuizTypeException exception) {
-            return;
-        }
-
-        fail("걸러내지 못함");
+        assertThatThrownBy(() -> service.add(dto)).isInstanceOf(InvalidQuizTypeException.class);
     }
 
     @Test
@@ -90,67 +78,70 @@ public class QuizServiceTests {
         dto.setCategory(null);
         dto.setAnswer("answer");
 
-        try {
-            service.add(dto);
-        } catch (InvalidCategoryException exception) {
-            return;
-        }
-
-        fail("걸러내지 못함");
+        assertThatThrownBy(() -> service.add(dto)).isInstanceOf(InvalidCategoryException.class);
     }
 
     @Test
     void retrieve_quiz_by_id() {
-        Quiz quiz = new Quiz();
-        quiz.setId(1l);
-        quiz.setQuestion("test Question");
-        quiz.setContent("test Content");
-        quiz.setCategory(Category.JAVA.name());
-        quiz.setDescriptiveAnswer(new DescriptiveAnswer());
-
-        when(quizRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(quiz));
-        service.retrieve(1l);
+        when(quizRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(new Quiz()));
+        assertThat(service.retrieve(1l)).isNull();
     }
 
     @Test
     void retrieve_descriptive_quiz_by_id() {
         Quiz quiz = new Quiz();
-        quiz.setId(1l);
-        quiz.setQuestion("test Question");
-        quiz.setContent("test Content");
-        quiz.setCategory(Category.JAVA.name());
         quiz.setDescriptiveAnswer(new DescriptiveAnswer());
 
         when(quizRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(quiz));
         when(descriptiveService.toQuizDTO(ArgumentMatchers.any())).thenReturn(new QuizDescriptiveDTO());
-        assertThat(service.retrieve(1l)).isInstanceOf(QuizDTO.class);
+        assertThat(service.retrieve(1l)).isInstanceOf(QuizDescriptiveDTO.class);
     }
 
     @Test
     void retrieve_objective_quiz_by_id() {
         Quiz quiz = new Quiz();
-        quiz.setId(1l);
-        quiz.setQuestion("test Question");
-        quiz.setContent("test Content");
-        quiz.setCategory(Category.JAVA.name());
         quiz.setObjectiveAnswer(new ObjectiveAnswer());
 
         when(quizRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(quiz));
         when(objectiveService.toQuizDTO(ArgumentMatchers.any())).thenReturn(new QuizObjectiveDTO());
-        assertThat(service.retrieve(1l)).isInstanceOf(QuizDTO.class);
+        assertThat(service.retrieve(1l)).isInstanceOf(QuizObjectiveDTO.class);
     }
 
     @Test
     void retrieve_quiz_by_id_is_null() {
-        try {
-            when(quizRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.empty());
-            service.retrieve(1l);
-        } catch (InvalidQuizInstanceException exception) {
-            return;
-        }
-
-        fail("걸러내지 못함");
+        when(quizRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> service.retrieve(1l)).isInstanceOf(InvalidQuizInstanceException.class);
     }
 
+    @Test
+    void quizdto_is_null_when_updating_quiz_by_id() {
+        assertThatThrownBy(() -> service.update(1l, null)).isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void quiz_is_null_when_updating_quiz_by_id() {
+        when(quizRepository.findById(1l)).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> service.update(1l, new QuizDescriptiveDTO())).isInstanceOf(InvalidQuizInstanceException.class);
+    }
+
+    @Test
+    void update_descriptive_quiz_by_id() {
+        Quiz quiz = new Quiz();
+        quiz.setDescriptiveAnswer(new DescriptiveAnswer());
+
+        when(quizRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(quiz));
+        when(descriptiveService.update(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(new QuizDescriptiveDTO());
+        assertThat(service.update(1l, new QuizDescriptiveDTO())).isInstanceOf(QuizDTO.class);
+    }
+
+    @Test
+    void update_objective_quiz_by_id() {
+        Quiz quiz = new Quiz();
+        quiz.setObjectiveAnswer(new ObjectiveAnswer());
+
+        when(quizRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(quiz));
+        when(objectiveService.update(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(new QuizObjectiveDTO());
+        assertThat(service.update(1l, new QuizObjectiveDTO())).isInstanceOf(QuizDTO.class);
+    }
 
 }

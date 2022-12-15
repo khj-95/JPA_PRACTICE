@@ -10,7 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,49 +26,35 @@ public class QuizDescriptiveServiceTests {
     @Test
     void test() {
         QuizDescriptiveDTO dto = new QuizDescriptiveDTO();
-        dto.setQType(QType.DESCRIPTIVE);
-        dto.setQuestion("Test question");
         dto.setCategory(Category.JAVA);
         dto.setAnswer("answer");
+
+        when(quizRepository.save(ArgumentMatchers.any())).thenReturn(new Quiz());
+        when(descriptiveAnswerRepository.save(ArgumentMatchers.any())).thenReturn(new DescriptiveAnswer());
+
         service.add(dto);
     }
 
     @Test
     void test_invalid_descriptive_quiz_instance() {
-        try {
-            QuizObjectiveDTO dto = new QuizObjectiveDTO();
-            service.add(dto);
-        } catch (InvalidDescriptiveInstanceException exception) {
-            return;
-        }
-
-        fail("걸러내지 못함");
+        assertThatThrownBy(() -> service.add(new QuizObjectiveDTO())).isInstanceOf(InvalidDescriptiveInstanceException.class);
     }
 
     @Test
     void test_invalid_quiz_instance() {
-        try {
-            when(quizRepository.save(ArgumentMatchers.any())).thenThrow(new RuntimeException());
-            QuizDescriptiveDTO dto = new QuizDescriptiveDTO();
-            service.add(dto);
-        } catch (InvalidQuizInstanceException exception) {
-            return;
-        }
-
-        fail("걸러내지 못함");
+        assertThatThrownBy(() -> service.add(new QuizDescriptiveDTO())).isInstanceOf(InvalidQuizInstanceException.class);
     }
 
     @Test
     void test_invalid_descriptive_answer_instance() {
-        try {
-            when(descriptiveAnswerRepository.save(ArgumentMatchers.any())).thenThrow(new RuntimeException());
-            QuizDescriptiveDTO dto = new QuizDescriptiveDTO();
-            service.add(dto);
-        } catch (InvalidDescriptiveAnswerInstanceException exception) {
-            return;
-        }
+        QuizDescriptiveDTO dto = new QuizDescriptiveDTO();
+        dto.setAnswer("test answer");
+        dto.setCategory(Category.JAVA);
 
-        fail("걸러내지 못함");
+        when(quizRepository.save(ArgumentMatchers.any())).thenReturn(new Quiz());
+        when(descriptiveAnswerRepository.save(ArgumentMatchers.any())).thenThrow(new RuntimeException());
+
+        assertThatThrownBy(() -> service.add(dto)).isInstanceOf(InvalidDescriptiveAnswerInstanceException.class);
     }
 
     @Test
@@ -85,6 +72,17 @@ public class QuizDescriptiveServiceTests {
 
         quiz.setDescriptiveAnswer(descriptiveAnswer);
 
-        service.toQuizDTO(quiz);
+        assertThat(service.toQuizDTO(quiz)).isInstanceOf(QuizDescriptiveDTO.class);
+    }
+
+    @Test
+    void test_to_quiz_dto_when_answer_is_null() {
+        Quiz quiz = new Quiz();
+        quiz.setId(1l);
+        quiz.setQuestion("test Question");
+        quiz.setContent("test Content");
+        quiz.setCategory(Category.JAVA.name());
+
+        assertThat(service.toQuizDTO(quiz)).hasFieldOrPropertyWithValue("answer", null);
     }
 }
