@@ -8,6 +8,8 @@ import com.example.jpa.quiz.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 public class QuizDescriptiveService implements QuizTypeStrategy {
 
@@ -55,6 +57,7 @@ public class QuizDescriptiveService implements QuizTypeStrategy {
         quiz.setDescriptiveAnswer(descriptiveAnswerRepository.save(descriptiveAnswer));
     }
 
+
     private Quiz tryAddQuiz(QuizDescriptiveDTO data) {
         Quiz quiz = new Quiz();
         quiz.setQuestion(data.getQuestion());
@@ -69,8 +72,23 @@ public class QuizDescriptiveService implements QuizTypeStrategy {
         dto.setContent(quiz.getContent());
         dto.setQType(QType.DESCRIPTIVE);
         dto.setCategory(Category.valueOf(quiz.getCategory()));
-        dto.setAnswer(quiz.getDescriptiveAnswer().getAnswer());
+
+        if (Objects.nonNull(quiz.getDescriptiveAnswer())) {
+            dto.setAnswer(quiz.getDescriptiveAnswer().getAnswer());
+        }
 
         return dto;
+    }
+
+    @Transactional
+    public QuizDTO update(Quiz quiz, QuizDTO dto) {
+        QuizDescriptiveDTO quizDescriptiveDTO = (QuizDescriptiveDTO) dto;
+
+        quiz.setQuestion(quizDescriptiveDTO.getQuestion());
+        quiz.setContent(quizDescriptiveDTO.getContent());
+        quiz.setCategory(quizDescriptiveDTO.getCategory().name());
+        quiz.getDescriptiveAnswer().setAnswer(quizDescriptiveDTO.getAnswer());
+
+        return toQuizDTO(quiz);
     }
 }

@@ -6,6 +6,7 @@ import com.example.jpa.quiz.exception.*;
 import com.example.jpa.quiz.repository.QuizRepository;
 import com.example.jpa.quiz.service.strategy.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -44,6 +45,7 @@ public class QuizService {
         }
     }
 
+    @Transactional
     public QuizDTO retrieve(Long id) {
         Quiz quiz = repository.findById(id).orElseThrow(() -> new InvalidQuizInstanceException());
         if (Objects.nonNull(quiz.getDescriptiveAnswer())) {
@@ -51,6 +53,22 @@ public class QuizService {
         }
         if (Objects.nonNull(quiz.getObjectiveAnswer())) {
             return objectiveService.toQuizDTO(quiz);
+        }
+        return null;
+    }
+
+    public QuizDTO update(Long id, QuizDTO dto) {
+        if (Objects.isNull(dto)) {
+            throw new NullPointerException("QuizDTO is empty");
+        }
+
+        Quiz quiz = repository.findById(id).orElseThrow(() -> new InvalidQuizInstanceException());
+
+        if (Objects.nonNull(quiz.getDescriptiveAnswer())) {
+            return descriptiveService.update(quiz, dto);
+        }
+        if (Objects.nonNull(quiz.getObjectiveAnswer())) {
+            return objectiveService.update(quiz, dto);
         }
         return null;
     }

@@ -8,6 +8,8 @@ import com.example.jpa.quiz.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 public class QuizObjectiveService implements QuizTypeStrategy {
     private final QuizRepository repository;
@@ -68,8 +70,22 @@ public class QuizObjectiveService implements QuizTypeStrategy {
         dto.setContent(quiz.getContent());
         dto.setQType(QType.OBJECTIVE);
         dto.setCategory(Category.valueOf(quiz.getCategory()));
-        dto.setAnswer(quiz.getObjectiveAnswer().getAnswer());
+
+        if (Objects.nonNull(quiz.getObjectiveAnswer())) {
+            dto.setAnswer(quiz.getObjectiveAnswer().getAnswer());
+        }
 
         return dto;
+    }
+
+    public QuizDTO update(Quiz quiz, QuizDTO dto) {
+        QuizObjectiveDTO quizObjectiveDTO = (QuizObjectiveDTO) dto;
+
+        quiz.setQuestion(quizObjectiveDTO.getQuestion());
+        quiz.setContent(quizObjectiveDTO.getContent());
+        quiz.setCategory(quizObjectiveDTO.getCategory().name());
+        quiz.getObjectiveAnswer().setAnswer(quizObjectiveDTO.getAnswer());
+
+        return toQuizDTO(quiz);
     }
 }

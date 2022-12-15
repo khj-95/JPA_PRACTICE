@@ -8,7 +8,7 @@ public class ObjectiveAnswer {
     @Column(name = "OBJECTIVE_ANSWER_ID")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private int answer;
+    private Integer answer;
     @OneToOne
     private Quiz quiz;
 

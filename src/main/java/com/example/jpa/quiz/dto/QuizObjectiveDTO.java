@@ -1,7 +1,7 @@
 package com.example.jpa.quiz.dto;
 
 public class QuizObjectiveDTO extends QuizDTO {
-    protected int answer;
+    protected Integer answer;
 
     public int getAnswer() {
         return answer;

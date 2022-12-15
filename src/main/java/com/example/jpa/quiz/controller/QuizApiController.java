@@ -13,13 +13,14 @@ public class QuizApiController {
         this.service = service;
     }
 
-    @PostMapping
-    public void add(QuizDTO dto) {
-        /*dto.setQuestion("test Question");
-        dto.setContent("test content");
-        dto.setCategory(Category.JAVA);
-        dto.setQType(QType.DESCRIPTIVE);
-        dto.setAnswer("test answer");*/
+    @PostMapping("add")
+    public void add(@RequestBody QuizDTO dto) {
+        /*QuizDescriptiveDTO test = new QuizDescriptiveDTO();
+        test.setQuestion("test Question");
+        test.setContent("test content");
+        test.setCategory(Category.JAVA);
+        test.setQType(QType.DESCRIPTIVE);
+        test.setAnswer("test answer");*/
 
         service.add(dto);
     }
@@ -27,5 +28,16 @@ public class QuizApiController {
     @GetMapping("{id}")
     public QuizDTO retrieve(@PathVariable("id") Long id) {
         return service.retrieve(id);
+    }
+
+    @PostMapping("update/{id}")
+    public QuizDTO update(@PathVariable("id") Long id, @RequestBody QuizDTO dto) {
+        /*QuizDescriptiveDTO test = new QuizDescriptiveDTO();
+        test.setQuestion("test update Question");
+        test.setContent("test update content");
+        test.setCategory(Category.SQL);
+        test.setAnswer("test update answer");*/
+
+        return service.update(id, dto);
     }
 }
