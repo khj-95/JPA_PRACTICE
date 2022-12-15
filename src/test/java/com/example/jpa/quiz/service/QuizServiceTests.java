@@ -144,4 +144,9 @@ public class QuizServiceTests {
         assertThat(service.update(1l, new QuizObjectiveDTO())).isInstanceOf(QuizDTO.class);
     }
 
+    @Test
+    void quiz_is_null_when_deleting_quiz_by_id() {
+        when(quizRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> service.delete(1l)).isInstanceOf(InvalidQuizInstanceException.class);
+    }
 }
