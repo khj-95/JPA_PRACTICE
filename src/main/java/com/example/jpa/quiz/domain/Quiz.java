@@ -10,10 +10,10 @@ public class Quiz {
     private String question;
     private String content;
     private String category;
-    @OneToOne
+    @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "OBJECTIVE_ANSWER_ID")
     private ObjectiveAnswer objectiveAnswer;
-    @OneToOne
+    @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "DESCRIPTIVE_ANSWER_ID")
     private DescriptiveAnswer descriptiveAnswer;
 
