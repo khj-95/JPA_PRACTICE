@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
@@ -105,6 +106,7 @@ public class QuizServiceTests {
         quiz.setQuestion("test Question");
         quiz.setContent("test Content");
         quiz.setCategory(Category.JAVA.name());
+        quiz.setDescriptiveAnswer(new DescriptiveAnswer());
 
         when(quizRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(quiz));
         service.retrieve(1l);
@@ -113,25 +115,29 @@ public class QuizServiceTests {
     @Test
     void retrieve_descriptive_quiz_by_id() {
         Quiz quiz = new Quiz();
-        DescriptiveAnswer descriptiveAnswer = new DescriptiveAnswer();
-        descriptiveAnswer.setQuiz(quiz);
-
-        quiz.setDescriptiveAnswer(descriptiveAnswer);
+        quiz.setId(1l);
+        quiz.setQuestion("test Question");
+        quiz.setContent("test Content");
+        quiz.setCategory(Category.JAVA.name());
+        quiz.setDescriptiveAnswer(new DescriptiveAnswer());
 
         when(quizRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(quiz));
-        service.retrieve(1l);
+        when(descriptiveService.toQuizDTO(ArgumentMatchers.any())).thenReturn(new QuizDescriptiveDTO());
+        assertThat(service.retrieve(1l)).isInstanceOf(QuizDTO.class);
     }
 
     @Test
     void retrieve_objective_quiz_by_id() {
         Quiz quiz = new Quiz();
-        ObjectiveAnswer objectiveAnswer = new ObjectiveAnswer();
-        objectiveAnswer.setQuiz(quiz);
-
-        quiz.setObjectiveAnswer(objectiveAnswer);
+        quiz.setId(1l);
+        quiz.setQuestion("test Question");
+        quiz.setContent("test Content");
+        quiz.setCategory(Category.JAVA.name());
+        quiz.setObjectiveAnswer(new ObjectiveAnswer());
 
         when(quizRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(quiz));
-        service.retrieve(1l);
+        when(objectiveService.toQuizDTO(ArgumentMatchers.any())).thenReturn(new QuizObjectiveDTO());
+        assertThat(service.retrieve(1l)).isInstanceOf(QuizDTO.class);
     }
 
     @Test
