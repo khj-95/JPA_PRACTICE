@@ -42,6 +42,7 @@ public class QuizObjectiveServiceTests {
 
     @Test
     void test_invalid_quiz_instance() {
+        when(quizRepository.save(ArgumentMatchers.any())).thenThrow(new RuntimeException());
         assertThatThrownBy(() -> service.add(new QuizObjectiveDTO())).isInstanceOf(InvalidQuizInstanceException.class);
     }
 
@@ -63,7 +64,7 @@ public class QuizObjectiveServiceTests {
         quiz.setId(1l);
         quiz.setQuestion("test Question");
         quiz.setContent("test Content");
-        quiz.setCategory(Category.JAVA.name());
+        quiz.setCategory(Category.JAVA);
 
         ObjectiveAnswer objectiveAnswer = new ObjectiveAnswer();
         objectiveAnswer.setId(1l);
@@ -81,7 +82,7 @@ public class QuizObjectiveServiceTests {
         quiz.setId(1l);
         quiz.setQuestion("test Question");
         quiz.setContent("test Content");
-        quiz.setCategory(Category.JAVA.name());
+        quiz.setCategory(Category.JAVA);
 
         assertThat(service.toQuizDTO(quiz)).hasFieldOrPropertyWithValue("answer", null);
     }
