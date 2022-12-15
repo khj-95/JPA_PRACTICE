@@ -72,4 +72,15 @@ public class QuizService {
         }
         return null;
     }
+
+    @Transactional
+    public void delete(Long id) {
+        Quiz quiz = repository.findById(id).orElseThrow(() -> new InvalidQuizInstanceException());
+        if (Objects.nonNull(quiz.getDescriptiveAnswer())) {
+            descriptiveService.delete(quiz);
+        }
+        if (Objects.nonNull(quiz.getObjectiveAnswer())) {
+            objectiveService.delete(quiz);
+        }
+    }
 }

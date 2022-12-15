@@ -91,4 +91,8 @@ public class QuizDescriptiveService implements QuizTypeStrategy {
 
         return toQuizDTO(quiz);
     }
+
+    public void delete(Quiz quiz) {
+        repository.deleteById(quiz.getId());
+    }
 }

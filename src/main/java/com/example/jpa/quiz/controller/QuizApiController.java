@@ -40,4 +40,9 @@ public class QuizApiController {
 
         return service.update(id, dto);
     }
+
+    @PostMapping("delete/{id}")
+    public void delete(@PathVariable("id") Long id) {
+        service.delete(id);
+    }
 }
