@@ -1,6 +1,6 @@
 package com.example.jpa.quiz.service.strategy;
 
-import com.example.jpa.quiz.constant.*;
+import com.example.jpa.quiz.constant.QType;
 import com.example.jpa.quiz.domain.*;
 import com.example.jpa.quiz.dto.*;
 import com.example.jpa.quiz.exception.*;
@@ -62,7 +62,7 @@ public class QuizDescriptiveService implements QuizTypeStrategy {
         Quiz quiz = new Quiz();
         quiz.setQuestion(data.getQuestion());
         quiz.setContent(data.getContent());
-        quiz.setCategory(data.getCategory().name());
+        quiz.setCategory(data.getCategory());
         return repository.save(quiz);
     }
 
@@ -71,7 +71,7 @@ public class QuizDescriptiveService implements QuizTypeStrategy {
         dto.setQuestion(quiz.getQuestion());
         dto.setContent(quiz.getContent());
         dto.setQType(QType.DESCRIPTIVE);
-        dto.setCategory(Category.valueOf(quiz.getCategory()));
+        dto.setCategory(quiz.getCategory());
 
         if (Objects.nonNull(quiz.getDescriptiveAnswer())) {
             dto.setAnswer(quiz.getDescriptiveAnswer().getAnswer());
@@ -86,7 +86,7 @@ public class QuizDescriptiveService implements QuizTypeStrategy {
 
         quiz.setQuestion(quizDescriptiveDTO.getQuestion());
         quiz.setContent(quizDescriptiveDTO.getContent());
-        quiz.setCategory(quizDescriptiveDTO.getCategory().name());
+        quiz.setCategory(quizDescriptiveDTO.getCategory());
         quiz.getDescriptiveAnswer().setAnswer(quizDescriptiveDTO.getAnswer());
 
         return toQuizDTO(quiz);

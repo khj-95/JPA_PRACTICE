@@ -1,5 +1,7 @@
 package com.example.jpa.quiz.domain;
 
+import com.example.jpa.quiz.constant.Category;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,13 +11,11 @@ public class Quiz {
     private Long id;
     private String question;
     private String content;
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private Category category;
     @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "OBJECTIVE_ANSWER_ID")
     private ObjectiveAnswer objectiveAnswer;
-    @OneToOne(orphanRemoval = true)
-    @JoinColumn(name = "DESCRIPTIVE_ANSWER_ID")
-    private DescriptiveAnswer descriptiveAnswer;
 
     public Long getId() {
         return id;
@@ -41,11 +41,11 @@ public class Quiz {
         this.content = content;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
@@ -64,4 +64,8 @@ public class Quiz {
     public void setDescriptiveAnswer(DescriptiveAnswer descriptiveAnswer) {
         this.descriptiveAnswer = descriptiveAnswer;
     }
+
+    @OneToOne(orphanRemoval = true)
+    @JoinColumn(name = "DESCRIPTIVE_ANSWER_ID")
+    private DescriptiveAnswer descriptiveAnswer;
 }
