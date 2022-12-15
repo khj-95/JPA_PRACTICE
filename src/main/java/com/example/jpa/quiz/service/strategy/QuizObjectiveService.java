@@ -64,7 +64,8 @@ public class QuizObjectiveService implements QuizTypeStrategy {
         return repository.save(quiz);
     }
 
-    public QuizObjectiveDTO toQuizDTO(Quiz quiz) {
+    @Override
+    public QuizDTO toQuizDTO(Quiz quiz) {
         QuizObjectiveDTO dto = new QuizObjectiveDTO();
         dto.setQuestion(quiz.getQuestion());
         dto.setContent(quiz.getContent());
@@ -78,6 +79,7 @@ public class QuizObjectiveService implements QuizTypeStrategy {
         return dto;
     }
 
+    @Override
     public QuizDTO update(Quiz quiz, QuizDTO dto) {
         QuizObjectiveDTO quizObjectiveDTO = (QuizObjectiveDTO) dto;
 
@@ -89,6 +91,7 @@ public class QuizObjectiveService implements QuizTypeStrategy {
         return toQuizDTO(quiz);
     }
 
+    @Override
     public void delete(Quiz quiz) {
         repository.deleteById(quiz.getId());
     }

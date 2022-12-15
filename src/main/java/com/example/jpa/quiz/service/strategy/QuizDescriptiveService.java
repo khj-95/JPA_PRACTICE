@@ -66,7 +66,8 @@ public class QuizDescriptiveService implements QuizTypeStrategy {
         return repository.save(quiz);
     }
 
-    public QuizDescriptiveDTO toQuizDTO(Quiz quiz) {
+    @Override
+    public QuizDTO toQuizDTO(Quiz quiz) {
         QuizDescriptiveDTO dto = new QuizDescriptiveDTO();
         dto.setQuestion(quiz.getQuestion());
         dto.setContent(quiz.getContent());
@@ -80,6 +81,7 @@ public class QuizDescriptiveService implements QuizTypeStrategy {
         return dto;
     }
 
+    @Override
     @Transactional
     public QuizDTO update(Quiz quiz, QuizDTO dto) {
         QuizDescriptiveDTO quizDescriptiveDTO = (QuizDescriptiveDTO) dto;
@@ -92,6 +94,7 @@ public class QuizDescriptiveService implements QuizTypeStrategy {
         return toQuizDTO(quiz);
     }
 
+    @Override
     public void delete(Quiz quiz) {
         repository.deleteById(quiz.getId());
     }
