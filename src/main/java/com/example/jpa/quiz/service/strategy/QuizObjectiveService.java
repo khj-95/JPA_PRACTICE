@@ -36,12 +36,7 @@ public class QuizObjectiveService implements QuizTypeStrategy {
         try {
             Quiz quiz = tryAddQuiz(data);
 
-            try {
-                tryAddObjectiveAnswer(data, quiz);
-            } catch (Exception exception) {
-                throw new InvalidObjectiveAnswerInstanceException();
-            }
-
+            tryAddObjectiveAnswer(data, quiz);
         } catch (InvalidObjectiveAnswerInstanceException exception) {
             throw exception;
         } catch (Exception exception) {
@@ -50,23 +45,29 @@ public class QuizObjectiveService implements QuizTypeStrategy {
     }
 
     private void tryAddObjectiveAnswer(QuizObjectiveDTO data, Quiz quiz) {
-        ObjectiveAnswer objectiveAnswer = new ObjectiveAnswer();
-        objectiveAnswer.setAnswer(data.getAnswer());
-        objectiveAnswer.setQuiz(quiz);
-        quiz.setObjectiveAnswer(objectiveAnswerRepository.save(objectiveAnswer));
+        try {
+            ObjectiveAnswer objectiveAnswer = new ObjectiveAnswer();
+
+            setAnswer(data, quiz, objectiveAnswer);
+
+            quiz.setObjectiveAnswer(objectiveAnswerRepository.save(objectiveAnswer));
+        } catch (Exception exception) {
+            throw new InvalidObjectiveAnswerInstanceException();
+        }
     }
 
     private Quiz tryAddQuiz(QuizObjectiveDTO data) {
         Quiz quiz = new Quiz();
-        quiz.setQuestion(data.getQuestion());
-        quiz.setContent(data.getContent());
-        quiz.setCategory(data.getCategory());
+
+        setQuiz(data, quiz);
+
         return repository.save(quiz);
     }
 
     @Override
     public QuizDTO toQuizDTO(Quiz quiz) {
         QuizObjectiveDTO dto = new QuizObjectiveDTO();
+
         dto.setQuestion(quiz.getQuestion());
         dto.setContent(quiz.getContent());
         dto.setQType(QType.OBJECTIVE);
@@ -83,10 +84,7 @@ public class QuizObjectiveService implements QuizTypeStrategy {
     public QuizDTO update(Quiz quiz, QuizDTO dto) {
         QuizObjectiveDTO quizObjectiveDTO = (QuizObjectiveDTO) dto;
 
-        quiz.setQuestion(quizObjectiveDTO.getQuestion());
-        quiz.setContent(quizObjectiveDTO.getContent());
-        quiz.setCategory(quizObjectiveDTO.getCategory());
-        quiz.getObjectiveAnswer().setAnswer(quizObjectiveDTO.getAnswer());
+        setQuiz(quizObjectiveDTO, quiz);
 
         return toQuizDTO(quiz);
     }
@@ -94,5 +92,22 @@ public class QuizObjectiveService implements QuizTypeStrategy {
     @Override
     public void delete(Quiz quiz) {
         repository.deleteById(quiz.getId());
+    }
+
+    private void setQuiz(QuizObjectiveDTO data, Quiz quiz) {
+        quiz.setQuestion(data.getQuestion());
+        quiz.setContent(data.getContent());
+        quiz.setCategory(data.getCategory());
+
+        ObjectiveAnswer objectiveAnswer = quiz.getObjectiveAnswer();
+
+        if (Objects.nonNull(objectiveAnswer)) {
+            objectiveAnswer.setAnswer(data.getAnswer());
+        }
+    }
+
+    private void setAnswer(QuizObjectiveDTO data, Quiz quiz, ObjectiveAnswer objectiveAnswer) {
+        objectiveAnswer.setAnswer(data.getAnswer());
+        objectiveAnswer.setQuiz(quiz);
     }
 }

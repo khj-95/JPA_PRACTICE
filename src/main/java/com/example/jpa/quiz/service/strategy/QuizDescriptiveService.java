@@ -12,7 +12,6 @@ import java.util.Objects;
 
 @Service
 public class QuizDescriptiveService implements QuizTypeStrategy {
-
     private final QuizRepository repository;
     private final DescriptiveAnswerRepository descriptiveAnswerRepository;
 
@@ -37,12 +36,7 @@ public class QuizDescriptiveService implements QuizTypeStrategy {
         try {
             Quiz quiz = tryAddQuiz(data);
 
-            try {
-                tryAddDescriptiveAnswer(data, quiz);
-            } catch (Exception exception) {
-                throw new InvalidDescriptiveAnswerInstanceException();
-            }
-
+            tryAddDescriptiveAnswer(data, quiz);
         } catch (InvalidDescriptiveAnswerInstanceException exception) {
             throw exception;
         } catch (Exception exception) {
@@ -51,24 +45,29 @@ public class QuizDescriptiveService implements QuizTypeStrategy {
     }
 
     private void tryAddDescriptiveAnswer(QuizDescriptiveDTO data, Quiz quiz) {
-        DescriptiveAnswer descriptiveAnswer = new DescriptiveAnswer();
-        descriptiveAnswer.setAnswer(data.getAnswer());
-        descriptiveAnswer.setQuiz(quiz);
-        quiz.setDescriptiveAnswer(descriptiveAnswerRepository.save(descriptiveAnswer));
-    }
+        try {
+            DescriptiveAnswer descriptiveAnswer = new DescriptiveAnswer();
 
+            setAnswer(data, quiz, descriptiveAnswer);
+
+            quiz.setDescriptiveAnswer(descriptiveAnswerRepository.save(descriptiveAnswer));
+        } catch (Exception exception) {
+            throw new InvalidDescriptiveAnswerInstanceException();
+        }
+    }
 
     private Quiz tryAddQuiz(QuizDescriptiveDTO data) {
         Quiz quiz = new Quiz();
-        quiz.setQuestion(data.getQuestion());
-        quiz.setContent(data.getContent());
-        quiz.setCategory(data.getCategory());
+
+        setQuiz(data, quiz);
+
         return repository.save(quiz);
     }
 
     @Override
     public QuizDTO toQuizDTO(Quiz quiz) {
         QuizDescriptiveDTO dto = new QuizDescriptiveDTO();
+
         dto.setQuestion(quiz.getQuestion());
         dto.setContent(quiz.getContent());
         dto.setQType(QType.DESCRIPTIVE);
@@ -86,10 +85,7 @@ public class QuizDescriptiveService implements QuizTypeStrategy {
     public QuizDTO update(Quiz quiz, QuizDTO dto) {
         QuizDescriptiveDTO quizDescriptiveDTO = (QuizDescriptiveDTO) dto;
 
-        quiz.setQuestion(quizDescriptiveDTO.getQuestion());
-        quiz.setContent(quizDescriptiveDTO.getContent());
-        quiz.setCategory(quizDescriptiveDTO.getCategory());
-        quiz.getDescriptiveAnswer().setAnswer(quizDescriptiveDTO.getAnswer());
+        setQuiz(quizDescriptiveDTO, quiz);
 
         return toQuizDTO(quiz);
     }
@@ -97,5 +93,22 @@ public class QuizDescriptiveService implements QuizTypeStrategy {
     @Override
     public void delete(Quiz quiz) {
         repository.deleteById(quiz.getId());
+    }
+
+    private void setQuiz(QuizDescriptiveDTO data, Quiz quiz) {
+        quiz.setQuestion(data.getQuestion());
+        quiz.setContent(data.getContent());
+        quiz.setCategory(data.getCategory());
+
+        DescriptiveAnswer descriptiveAnswer = quiz.getDescriptiveAnswer();
+
+        if (Objects.nonNull(descriptiveAnswer)) {
+            descriptiveAnswer.setAnswer(data.getAnswer());
+        }
+    }
+
+    private void setAnswer(QuizDescriptiveDTO data, Quiz quiz, DescriptiveAnswer descriptiveAnswer) {
+        descriptiveAnswer.setAnswer(data.getAnswer());
+        descriptiveAnswer.setQuiz(quiz);
     }
 }
